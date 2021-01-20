@@ -528,6 +528,10 @@ def download_commune_excel() -> None:
     
     print('Beginning commune file download with requests')
 
+    folder = os.path.join(".","data")
+    if not(os.path.exists(folder)):
+        os.mkdir(folder)
+    
     url = 'https://www.bfs.admin.ch/bfsstatic/dam/assets/11467406/master'
     r = requests.get(url)
 
@@ -576,7 +580,7 @@ def main():
     global commune
     commune = pd.read_excel(os.path.join(".", "data", 'commune.xlsx'), sheet_name='GDE')
     
-    cities = ["Saas-Fee", "Evolène", "Arosa", "Bulle"]#, "Laax","Belp" ,"Saanen","Adelboden", "Andermatt", "Davos", "Bulle", "Bern", "Genève", "Lausanne", "Zurich", "Neuchâtel", "Sion", "St. Gallen", "Appenzell", "Solothurn", "Zug", "Fribourg", "Luzern", "Ecublens (VD)", "Kloten", "Le Grand-Saconnex", "Nyon", "Zermatt", "Lugano", "Romont"]
+    cities = ["Saas-Fee", "Arosa", "Bulle", "Laax","Belp" ,"Saanen","Adelboden", "Andermatt", "Davos", "Bulle", "Bern", "Genève", "Lausanne", "Zürich", "Neuchâtel", "Sion", "St. Gallen", "Appenzell", "Solothurn", "Zug", "Fribourg", "Luzern", "Ecublens (VD)", "Kloten", "Le Grand-Saconnex", "Nyon", "Zermatt", "Lugano"]
     cities = clean_cities_list(cities)
     queue = Queue()
     for x in range(2):
