@@ -17,3 +17,7 @@ conda env config vars set CLIENT_SECRET=<swisscom client secret>
 The `dataFetcher.py` is in charge of using the Swisscom MIP API to request the data. By default, it will request the data for the day of the free trial but the code is easily modifiable to allow any day to be queried.
 
 The `SwisscomAnalysis.ipynb` is a notebook showing a few types of analysis that are possible with the data that I collected.
+
+## Data story
+
+Article about using the Swisscom MIP API to understand citizens habits can be found here: https://jmion.medium.com/a-deep-dive-into-mobility-data-6c76926712be
