@@ -3,7 +3,6 @@
 
 # # Loading data
 
-# In[8]:
 
 
 import pandas as pd
@@ -21,8 +20,12 @@ import os
 import getpass
 import json
 
+from queue import Queue
+from threading import Thread
+from time import time
+import logging
+import os
 
-# In[9]:
 
 
 #cashing in case of multiple calls.
@@ -65,8 +68,6 @@ def get_tiles(municipalityId: int) -> pd.DataFrame:
     return pd.DataFrame(data={'tileID': tileID, 'll_lat': ll_lat, 'll_lon': ll_lon, 'ur_lat': ur_lat, 'ur_lon': ur_lon})
 
 
-# In[10]:
-
 
 def get_municipalityID(name: str) -> np.array(int):
     """Converts a municipality name to ID
@@ -81,8 +82,6 @@ def get_municipalityID(name: str) -> np.array(int):
     """
     return commune.loc[commune.GDENAME == name].GDENR.to_numpy()
 
-
-# In[11]:
 
 
 def visualize_coordinates(df: pd.DataFrame, latitude: str, longitude: str) -> None :
@@ -101,7 +100,6 @@ def visualize_coordinates(df: pd.DataFrame, latitude: str, longitude: str) -> No
     fig.show()
 
 
-# In[12]:
 
 
 def get_all_tiles_switzerland() -> pd.DataFrame:
@@ -120,7 +118,6 @@ def get_all_tiles_switzerland() -> pd.DataFrame:
 
 
 
-# In[37]:
 
 
 def get_daily_demographics(tiles, day=datetime(year=2020, month=1, day=27, hour=0, minute=0) ):
@@ -170,7 +167,6 @@ def get_daily_demographics(tiles, day=datetime(year=2020, month=1, day=27, hour=
 
 
 
-# In[48]:
 
 
 def get_hourly_demographics_dataframe(tiles, day=datetime(year=2020, month=1, day=27, hour=0, minute=0)):
@@ -283,7 +279,6 @@ def get_hourly_demographics_dataframe(tiles, day=datetime(year=2020, month=1, da
     return pd.DataFrame(data={'tileID': tile_id, "age_cat": age_cat, 'age_distribution':age_distribution, "male_proportion": male_proportion, 'time': time_data}).set_index(['tileID', 'time'])
 
 
-# In[65]:
 
 
 def get_daily_density(tiles: np.array(int), day=datetime(year=2020, month=1, day=27)) -> pd.DataFrame:
@@ -338,7 +333,6 @@ def get_daily_density(tiles: np.array(int), day=datetime(year=2020, month=1, day
     return pd.DataFrame(data={'tileID': tileID, 'score':score}).set_index("tileID")
 
 
-# In[66]:
 
 
 def get_hourly_density_dataframe(tiles, day=datetime(year=2020, month=1, day=27, hour=0, minute=0)):
@@ -408,7 +402,6 @@ def get_hourly_density_dataframe(tiles, day=datetime(year=2020, month=1, day=27,
     return pd.DataFrame(data={'tileID': tiles_data, 'score':score, 'time': time_data}).set_index(['tileID', 'time'])
 
 
-# In[10]:
 
 
 def fetch_data_city(city: str) -> None:
@@ -447,13 +440,6 @@ def fetch_data_city(city: str) -> None:
         get_daily_demographics(tiles['tileID'].to_numpy()).to_pickle(daily_demographics_path)
 
 
-
-
-
-
-# In[11]:
-
-
 def clean_cities_list(cities: [str]) -> [str]:
     """Cleans the list of cities by removing all the cities that are not found in the 
     official list of cities provided by the Federal Statisitics Office.
@@ -486,19 +472,6 @@ def clean_cities_list(cities: [str]) -> [str]:
 
 # Multithread fetch implementation
 
-# In[13]:
-
-
-from queue import Queue
-from threading import Thread
-from time import time
-import logging
-import os
-
-
-# In[14]:
-
-
 class DownloadWorker(Thread):
 
     def __init__(self, queue):
@@ -516,9 +489,6 @@ class DownloadWorker(Thread):
                 fetch_data_city(city)
             finally:
                 self.queue.task_done()
-
-
-# In[15]:
 
 
 def download_commune_excel() -> None:
@@ -539,9 +509,6 @@ def download_commune_excel() -> None:
         f.write(r.content)
     print("End of commune file download")
     
-
-
-# In[23]:
 
 
 logger = logging.getLogger(__name__)
@@ -612,10 +579,8 @@ if __name__ == "__main__":
     main()
 
 
-# ## Other functions not currently used
-
-# In[ ]:
-
+              
+# Other functions not currently used
 
 def get_daily_demographics_male(tiles: np.array(int), day=datetime(year=2020, month=1, day=27)) -> pd.DataFrame:
     """Fetches Daily demographics.
@@ -651,8 +616,6 @@ def get_daily_demographics_male(tiles: np.array(int), day=datetime(year=2020, mo
                         maleProportion.append(t["maleProportion"])
     return pd.DataFrame(data={'tileID': tileID, 'maleProportion':maleProportion})
 
-
-# In[ ]:
 
 
 def get_daily_demographics_age(tiles: np.array(int), day=datetime(year=2020, month=1, day=27)) -> pd.DataFrame:
